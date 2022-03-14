@@ -1,13 +1,6 @@
 # START
 
 #Team 20_DP3_code
-
-#Programmer 1: Via Iseppon
-    #MacID: iseppono
-
-#Programmer 2: Yihelasi Fulati
-    #MacID: fulatiy
-
 #...............................................................................
 
 from sensor_library import *
