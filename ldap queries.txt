@@ -1,0 +1,31 @@
+mailNickname
+proxyAddresses
+
+#to get every user domain and nickname
+
+Import-Module ActiveDirectory
+$Objects = Get-ADObject -LDAPFilter "(&(proxyAddresses=*)(mailNickname=*))" -Properties proxyAddresses mailNickname
+ForEach ($Object In $Objects){
+	ForEach ($nickname in $Object.mailNickname){
+		ForEach ($proxyAddress in $Object.proxyAddresses){
+			$Output=$nickname+;+$proxyAddress
+			Write-Host $Output
+		}
+	}
+}
+		
+
+#to get only users who dont have updated nickname or username
+Import-Module ActiveDirectory
+$Users = Get-ADObject -LDAPFilter "(&(proxyAddresses=*)(!(proxyAddresses=* @activedynamics.com))(!(proxyAddresses=* @activexhaust.com)))" -Properties proxyAddresses 
+ForEach ($User in $Users) {
+	ForEach ($proxyAddress in $User.proxyAddresses){
+		Write-Host $User.distinguishedName 't $proxyAddress
+	}
+}
+
+
+(&(objectClass=user)(proxyAddresses=*)(|((!(proxyAddresses=*@activedynamics.com*))(!(proxyAddresses=*@activexhaust.com*)))))
+(&(objectclass=user)(proxyAddresses=*)(!(mailNickname=*)))
+
+(|((!(proxyAddresses=*@activedynamics.com*))(!(proxyAddresses=*@activexhaust.com*))))

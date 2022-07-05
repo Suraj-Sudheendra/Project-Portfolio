@@ -1,0 +1,24 @@
+import xml.etree.ElementTree as ET 
+import os
+import pandas as pd
+import openpyxl
+
+loops=[]
+source='/directory'
+repeats_tag=".//*[@Name='CMD_PRG_REPEAT_Count']/Value"
+xml_list = os.listdir(source)
+
+for xml in xml_list: 
+  tree = ET.parse(xml) 
+  root = tree.getroot()
+  try:
+    y=root.findall(repeats_tag)
+    loops.append(y[0].text)
+  except:
+    loops.append("N/A")
+    continue
+
+data={'File Name':xml_list, 'Repeat Loops':loops}
+df=pd.DataFrame(data,index=None)
+df.to_excel('output.xlsx')
+  

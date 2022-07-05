@@ -1,0 +1,35 @@
+import math
+import pandas as pd
+import sympy
+import openpyxl
+import xlrd
+from sympy import nsolve, Symbol
+x1 = Symbol('x1')
+y1 = Symbol ('y1')
+z1= Symbol ('z1')
+x2 = Symbol ('x2')
+y2 =Symbol ('y2')
+z2=Symbol ('z2')
+x3=Symbol ('x3')
+y3=Symbol ('y3')
+z3=Symbol ('z3')
+workbook=pd.read_excel('test.xlsx', sheet_name= 2)
+dx,dy,dz,ex,ey,ez,fx,fy,fz=[],[],[],[],[],[],[],[],[]
+for i in range (len(workbook)):
+   L1,L2,L3,L4,L5,L6 =workbook['L1'].iloc[i], workbook['L2'].iloc[i],workbook['L3'].iloc[i],workbook['L4'].iloc[i],workbook['L5'].iloc[i],workbook['L6'].iloc[i]
+   eq1 = (x1+30)**2+(y1)**2+(z1+80)**2-(L1)**2
+   eq2 = (x1-15)**2+(y1+25.9808)**2+(z1+80)**2-(L2)**2
+   eq3 = (x2-15)**2+(y2+25.9808)**2+(z2+80)**2-(L3)**2
+   eq4 = (x2-15)**2+(y2-25.9808)**2+(z2+80)**2-(L4)**2
+   eq5 = (x3-15)**2+(y3-25.9808)**2+(z3+80)**2-(L5)**2
+   eq6 = (x3+30)**2+(y3)**2+(z3+80)**2-(L6)**2
+   eq7 = (x1-x2)**2+(y1-y2)**2+(z1-z2)**2-51.9615**2
+   eq8 = (x2-x3)**2+(y2-y3)**2+(z2-z3)**2-51.9615**2
+   eq9 = (x3-x1)**2+(y3-y1)**2+(z3-z1)**2-51.9615**2
+   coordinates=nsolve((eq1,eq2,eq3,eq4,eq5,eq6,eq7,eq8,eq9), (x1,x2,x3,y1,y2,y3,z1,z2,z3),(-15,30,-15,-25.9808,0,25.9808,0,0,0))
+   dx.append(coordinates[0]), dy.append(coordinates[3]), dz.append(coordinates[6])
+   ex.append(coordinates[1]), ey.append(coordinates[4]), ez.append(coordinates[7])
+   fx.append(coordinates[2]), fy.append(coordinates[5]), fz.append(coordinates[8])
+data={'x1':dx, 'y1':dy, 'z1':dz,'x2':ex, 'y2':ey, 'z2':ez, 'x3':fx, 'y3':fy, 'z3':fz }
+df=pd.DataFrame(data, index = None)
+df.to_excel('test.xlsx', sheet_name="test")

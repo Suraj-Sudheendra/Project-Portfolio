@@ -1,0 +1,38 @@
+from scipy.optimize import  fsolve
+import numpy as np
+
+import pandas as pd
+from openpyxl import *
+
+workbook=pd.read_excel('input.xlsx', sheet_name= 1) #opens the excel file with input data and with sheet name accordingly
+df=pd.DataFrame(index=range(workbook.shape[1]+1), columns=range(3))
+
+
+def func(p):
+  x,y,z,a,b,c,d,e,f=p
+  return [(-18)*sp.sqrt(1-y**2)*sp.sqrt(1-z**2)-(sp.sqrt(1-x**2)*z-x*y*sp.sqrt(1-z**2))*(-20.7846)-x1,(-18)*sp.sqrt(1-y**2)*z+(sp.sqrt(1-x**2)*sp.sqrt(1-z**2)+x*y*z)*(-20.7846)-y1,(-18)*(-y)+x*sp.sqrt(1-y**2)*(-20.7846)-z1,(27)*sp.sqrt(1-y**2)*sp.sqrt(1-z**2)-(sp.sqrt(1-x**2)*z-x*y*sp.sqrt(1-z**2))*(-5.19615)-x2,(27)*sp.sqrt(1-y**2)*z+(sp.sqrt(1-x**2)*sp.sqrt(1-z**2)+x*y*z)*(-5.19615)-y2,(27)*(-y)+x*sp.sqrt(1-y**2)*(-5.19615)-z2,(-9)*sp.sqrt(1-y**2)*sp.sqrt(1-z**2)-(sp.sqrt(1-x**2)*z-x*y*sp.sqrt(1-z**2))*(25.9808)-x3,(-9)*sp.sqrt(1-y**2)*z+(sp.sqrt(1-x**2)*sp.sqrt(1-z**2)+x*y*z)*(25.9808)-y3,(-9)*(-y)+x*sp.sqrt(1-y**2)*(25.9808)-z3]
+
+
+init_pt=[0.087, 0.087, 0.035,0, 0 ,0 ,0 ,0 ,0]
+
+for i in range (workbook.shape[1]):
+  x1,x2,x3,y1,y2,y3,z1,z2,z3 = workbook[i].iloc[0], workbook[i].iloc[3],workbook[i].iloc[6],workbook[i].iloc[1],workbook[i].iloc[4],workbook[i].iloc[7], workbook[i].iloc[2],workbook[i].iloc[5],workbook[i].iloc[8]
+  rad=(fsolve(func,(init_pt)))
+  deg=[]
+  for j in range(3):
+    deg.append(np.degrees(rad[j]))
+    deg[j]=round(deg[j],4)
+  df.iloc[i]=deg
+
+index=[]
+for i in range (1,workbook.shape[1]+2):
+  index.append(i)
+df.index=index
+df.columns=['x φ (deg) ','y θ (deg)','z ψ (deg)']
+with pd.ExcelWriter('input.xlsx',mode='a') as writer:  
+    df.to_excel(writer, sheet_name='output')# this creates a new sheet on the existing excel file and displays the data there
+print("done")
+
+#system=[(-18)*sp.sqrt(1-y**2)*sp.sqrt(1-z**2)-(sp.sqrt(1-x**2)*z-x*y*sp.sqrt(1-z**2))*(-20.7846)-x1,(-18)*sp.sqrt(1-y**2)*z+(sp.sqrt(1-x**2)*sp.sqrt(1-z**2)+x*y*z)*(-20.7846)-y1,(-18)*(-y)+x*sp.sqrt(1-y**2)*(-20.7846)-z1,(27)*sp.sqrt(1-y**2)*sp.sqrt(1-z**2)-(sp.sqrt(1-x**2)*z-x*y*sp.sqrt(1-z**2))*(-5.19615)-x2,(27)*sp.sqrt(1-y**2)*z+(sp.sqrt(1-x**2)*sp.sqrt(1-z**2)+x*y*z)*(-5.19615)-y2,(27)*(-y)+x*sp.sqrt(1-y**2)*(-5.19615)-z2,(-9)*sp.sqrt(1-y**2)*sp.sqrt(1-z**2)-(sp.sqrt(1-x**2)*z-x*y*sp.sqrt(1-z**2))*(25.9808)-x3,(-9)*sp.sqrt(1-y**2)*z+(sp.sqrt(1-x**2)*sp.sqrt(1-z**2)+x*y*z)*(25.9808)-y3,(-9)*(-y)+x*sp.sqrt(1-y**2)*(25.9808)-z3]
+
+#Suraj Sudheendra 
